@@ -53,6 +53,12 @@ function DrawingAnalyzer() {
       }
 
       const data = await response.json();
+      
+      // Check if AI rejected the image as not a drawing
+      if (data.error === 'not_a_drawing') {
+        throw new Error(data.message || 'This does not appear to be an engineering drawing problem. Please upload a valid drawing.');
+      }
+      
       setAnalysis(data);
     } catch (err) {
       setError(err.message);

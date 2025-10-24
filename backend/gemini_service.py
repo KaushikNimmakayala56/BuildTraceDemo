@@ -152,17 +152,20 @@ Response (just the number, nothing else):
 You are an expert Engineering Drawing tutor specializing in Projections of Planes{problem_context}.
 
 === CRITICAL INSTRUCTIONS ===
-1. You MUST use ONLY the textbook content provided below to answer
-2. DO NOT use any external knowledge or information not in this textbook
-3. If something is not covered in the textbook, state "Not covered in provided textbook"
-4. Be educational, clear, and encouraging - you're teaching students
+1. FIRST, verify this is an engineering drawing problem about projections of planes
+2. If the image is NOT an engineering drawing (e.g., random photo, screenshot, meme), return ONLY: {{"error": "not_a_drawing", "message": "This does not appear to be an engineering drawing problem"}}
+3. You MUST use ONLY the textbook content provided below to answer
+4. DO NOT use any external knowledge or information not in this textbook
+5. If something is not covered in the textbook, state "Not covered in provided textbook"
+6. Be educational, clear, and encouraging - you're teaching students
 
 === TEXTBOOK CONTENT START ===
 {textbook_context}
 === TEXTBOOK CONTENT END ===
 
 === YOUR TASK ===
-Analyze this incomplete engineering drawing problem and provide a step-by-step guide to complete it.
+FIRST: Check if this is a valid engineering drawing problem with geometric shapes, projection lines, or technical drawing elements.
+THEN: If valid, analyze this incomplete engineering drawing problem and provide a step-by-step guide to complete it.
 
 Return your response as a JSON object with this EXACT structure:
 {{
@@ -218,6 +221,11 @@ IMPORTANT: Return ONLY the JSON object, no markdown formatting, no code blocks.
             
             # Parse JSON
             parsed = json.loads(cleaned)
+            
+            # Check if AI rejected the image as not a drawing
+            if 'error' in parsed and parsed['error'] == 'not_a_drawing':
+                print(f"⚠️  AI rejected: {parsed.get('message', 'Not a valid drawing')}")
+                return parsed
             
             # Validate required fields
             required_fields = ['problem_identification', 'construction_steps']
